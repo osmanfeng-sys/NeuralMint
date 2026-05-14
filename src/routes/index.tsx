@@ -67,6 +67,22 @@ function Index() {
       {/* Hero + Generator */}
       <section className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-12 lg:grid-cols-2 lg:py-20">
         <div className="flex flex-col justify-center">
+          <div className="mb-8 flex gap-4">
+            <button
+              onClick={() => setGood((n) => n + 1)}
+              className="flex flex-col items-center gap-1 rounded-lg bg-emerald-500/10 px-5 py-3 text-emerald-300 hover:bg-emerald-500/20 transition-colors border border-emerald-500/30"
+            >
+              <span className="text-sm font-semibold">Good</span>
+              <span className="text-lg font-bold tabular-nums">{good}</span>
+            </button>
+            <button
+              onClick={() => setBad((n) => n + 1)}
+              className="flex flex-col items-center gap-1 rounded-lg bg-rose-500/10 px-5 py-3 text-rose-300 hover:bg-rose-500/20 transition-colors border border-rose-500/30"
+            >
+              <span className="text-sm font-semibold">Bad</span>
+              <span className="text-lg font-bold tabular-nums">{bad}</span>
+            </button>
+          </div>
           <h1 className="text-5xl font-bold leading-tight tracking-tight md:text-6xl">
             无需注册，无需绑定手机，无需绑定账号，事了抚衣去，深藏功与名。杜绝隐私泄露。
           </h1>
