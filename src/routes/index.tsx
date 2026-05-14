@@ -57,7 +57,6 @@ function Index() {
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#0A2540] font-bold">1</div>
           <span className="text-lg font-semibold">PasswordGen</span>
         </div>
         <button className="rounded-full bg-[#0070E0] px-5 py-2.5 text-sm font-semibold hover:bg-[#005fc4] transition-colors">
