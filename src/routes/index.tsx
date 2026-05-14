@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Copy, Check, RefreshCw, Shuffle, Lightbulb, Hash } from "lucide-react";
+import { Copy, Check, RefreshCw, Shuffle, Lightbulb, Hash, Sparkles } from "lucide-react";
 import { usePasswordGenerator, type PasswordMode } from "@/hooks/use-password-generator";
 
 export const Route = createFileRoute("/")({
@@ -41,12 +41,31 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 
 type Burst = { id: number; emoji: string };
 
+const COMPANY_CHARS = "鑫盛源昌泰隆兴和顺达通宇辰晟瀚远博睿智云海星辰天弘伟立华夏龙凤金玉福祥瑞祥安信德裕丰润恒美佳乐康瑞翔翼诚信缘聚汇高科创新锐影领途";
+const SUFFIX_PRESETS = ["科技有限公司", "信息技术有限公司", "网络科技有限公司", "贸易有限公司", "文化传媒有限公司"];
+
+function randomCompanyName(prefix: string, suffix: string, midLen: number) {
+  let mid = "";
+  for (let i = 0; i < midLen; i++) {
+    mid += COMPANY_CHARS.charAt(Math.floor(Math.random() * COMPANY_CHARS.length));
+  }
+  return `${prefix}${mid}${suffix}`;
+}
+
 function Index() {
   const g = usePasswordGenerator();
   const [copied, setCopied] = useState(false);
   const [good, setGood] = useState<number>(0);
   const [bad, setBad] = useState<number>(0);
   const [bursts, setBursts] = useState<Record<"good" | "bad", Burst[]>>({ good: [], bad: [] });
+
+  // Company generator state
+  const [prefix, setPrefix] = useState("北京");
+  const [suffix, setSuffix] = useState("科技有限公司");
+  const [midLen, setMidLen] = useState(2);
+  const [count, setCount] = useState(10);
+  const [companies, setCompanies] = useState<string[]>([]);
+  const [companiesCopied, setCompaniesCopied] = useState(false);
 
   useEffect(() => {
     setGood(Number(localStorage.getItem("fb_good") ?? 0));
@@ -58,7 +77,7 @@ function Index() {
     localStorage.setItem("fb_bad", String(bad));
   }, [good, bad]);
 
-  const marqueeText = "无需注册，无需绑定手机，无需绑定账号，事了抚衣去，深藏功与名。杜绝隐私泄露。";
+  const marqueeText = "无需注册,无需绑定手机,无需绑定账号,事了抚衣去,深藏功与名。杜绝隐私泄露。";
   const marqueeColors = useMemo(
     () => ["#ff5e5e", "#ffb454", "#ffe156", "#7ddc6a", "#5ec8ff", "#a78bfa", "#ff7ac6", "#ffffff"],
     []
@@ -72,14 +91,8 @@ function Index() {
     }, 900);
   };
 
-  const handleGood = () => {
-    setGood((n) => n + 1);
-    triggerBurst("good", "👍");
-  };
-  const handleBad = () => {
-    setBad((n) => n + 1);
-    triggerBurst("bad", "😢");
-  };
+  const handleGood = () => { setGood((n) => n + 1); triggerBurst("good", "👍"); };
+  const handleBad = () => { setBad((n) => n + 1); triggerBurst("bad", "😢"); };
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(g.password);
@@ -87,11 +100,25 @@ function Index() {
     setTimeout(() => setCopied(false), 1500);
   };
 
+  const handleGenerateCompanies = () => {
+    const n = Math.max(1, Math.min(1000, count || 1));
+    const list: string[] = [];
+    for (let i = 0; i < n; i++) list.push(randomCompanyName(prefix, suffix, Math.max(1, midLen)));
+    setCompanies(list);
+  };
+
+  const handleCopyCompanies = async () => {
+    if (!companies.length) return;
+    await navigator.clipboard.writeText(companies.join("\n"));
+    setCompaniesCopied(true);
+    setTimeout(() => setCompaniesCopied(false), 1500);
+  };
+
   const minLen = g.mode === "pin" ? 3 : 8;
   const maxLen = g.mode === "pin" ? 12 : 100;
 
   return (
-    <main className="min-h-screen bg-[#0A2540] text-white">
+    <main className="min-h-screen bg-[#0A2540] text-white pb-32">
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
         <div className="flex items-center gap-2">
@@ -102,69 +129,142 @@ function Index() {
         </button>
       </header>
 
-      {/* Feedback bar */}
-      <div className="mx-auto flex max-w-7xl justify-center gap-12 px-6 pt-4">
-        <button
-          onClick={handleGood}
-          className="relative flex h-24 w-32 flex-col items-center justify-center gap-1 rounded-xl bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 active:scale-95 transition-all border border-emerald-500/30"
+      {/* Marquee top-left */}
+      <div className="mx-auto max-w-7xl px-6">
+        <div
+          className="overflow-hidden whitespace-nowrap rounded-md bg-white/5 px-4 py-2 max-w-xl"
+          style={{
+            fontFamily: '"Source Han Sans SC", "Source Han Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+            fontSize: "16px",
+          }}
         >
-          <span className="text-sm font-semibold">Good</span>
-          <span className="text-xl font-bold tabular-nums">{good}</span>
-          {bursts.good.map((b) => (
-            <span
-              key={b.id}
-              className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl animate-[burst_0.9s_ease-out_forwards]"
-            >
-              {b.emoji}
-            </span>
-          ))}
-        </button>
-        <button
-          onClick={handleBad}
-          className="relative flex h-24 w-32 flex-col items-center justify-center gap-1 rounded-xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 active:scale-95 transition-all border border-rose-500/30"
-        >
-          <span className="text-sm font-semibold">Bad</span>
-          <span className="text-xl font-bold tabular-nums">{bad}</span>
-          {bursts.bad.map((b) => (
-            <span
-              key={b.id}
-              className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl animate-[burst_0.9s_ease-out_forwards]"
-            >
-              {b.emoji}
-            </span>
-          ))}
-        </button>
+          <span className="inline-block animate-[marquee_22s_linear_infinite]">
+            {[0, 1].map((rep) => (
+              <span key={rep} className="inline-block pr-16">
+                {marqueeText.split("").map((ch, i) => (
+                  <span key={`${rep}-${i}`} style={{ color: marqueeColors[(i + rep) % marqueeColors.length] }}>
+                    {ch}
+                  </span>
+                ))}
+              </span>
+            ))}
+          </span>
+        </div>
       </div>
 
-      {/* Hero + Generator */}
-      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-12 lg:grid-cols-2 lg:py-20">
-        <div className="flex flex-col justify-center">
-          <h1
-            className="overflow-hidden whitespace-nowrap font-semibold"
-            style={{
-              fontFamily: '"Source Han Sans SC", "Source Han Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
-              fontSize: "16px",
-              lineHeight: "1.6",
-            }}
-          >
-            <span className="inline-block animate-[marquee_22s_linear_infinite] pl-full">
-              {[0, 1].map((rep) => (
-                <span key={rep} className="inline-block pr-16">
-                  {marqueeText.split("").map((ch, i) => (
-                    <span key={`${rep}-${i}`} style={{ color: marqueeColors[(i + rep) % marqueeColors.length] }}>
-                      {ch}
-                    </span>
-                  ))}
-                </span>
+      {/* Generators grid */}
+      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-12 lg:grid-cols-2 lg:py-16">
+        {/* Company name generator (left) */}
+        <div className="rounded-2xl bg-white p-8 text-slate-900 shadow-2xl">
+          <div className="flex items-center gap-2">
+            <Sparkles size={20} className="text-[#0070E0]" />
+            <h2 className="text-lg font-semibold">公司名称随机生成器</h2>
+          </div>
+
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-sm font-medium text-slate-700">前缀</label>
+              <input
+                value={prefix}
+                onChange={(e) => setPrefix(e.target.value)}
+                placeholder="如:北京"
+                className="mt-2 w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#0070E0]"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-slate-700">后缀</label>
+              <input
+                value={suffix}
+                onChange={(e) => setSuffix(e.target.value)}
+                list="suffix-presets"
+                placeholder="如:科技有限公司"
+                className="mt-2 w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#0070E0]"
+              />
+              <datalist id="suffix-presets">
+                {SUFFIX_PRESETS.map((s) => <option key={s} value={s} />)}
+              </datalist>
+            </div>
+          </div>
+
+          <div className="mt-5 flex items-center gap-4">
+            <span className="text-sm text-slate-600 w-16">中间字数</span>
+            <input
+              type="range"
+              min={1}
+              max={6}
+              value={midLen}
+              onChange={(e) => setMidLen(Number(e.target.value))}
+              className="flex-1 accent-[#0070E0]"
+            />
+            <input
+              type="number"
+              min={1}
+              max={6}
+              value={midLen}
+              onChange={(e) => setMidLen(Number(e.target.value))}
+              className="w-14 rounded-md border border-slate-200 px-2 py-1 text-center text-sm font-medium"
+            />
+          </div>
+
+          <div className="mt-5">
+            <span className="text-sm text-slate-600">生成数量</span>
+            <div className="mt-2 flex items-center gap-2">
+              {[10, 50, 100].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setCount(n)}
+                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                    count === n ? "bg-[#0070E0] text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  }`}
+                >
+                  {n}
+                </button>
               ))}
-            </span>
-          </h1>
-          <p className="mt-6 text-lg text-slate-300">
-            版权所有@涛哥
-          </p>
+              <input
+                type="number"
+                min={1}
+                max={1000}
+                value={count}
+                onChange={(e) => setCount(Number(e.target.value))}
+                className="ml-2 w-20 rounded-md border border-slate-200 px-2 py-1.5 text-center text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <button
+              onClick={handleGenerateCompanies}
+              className="flex items-center justify-center gap-2 rounded-lg bg-[#0070E0] py-3 text-sm font-semibold text-white hover:bg-[#005fc4] transition-colors"
+            >
+              <Sparkles size={16} />
+              生成
+            </button>
+            <button
+              onClick={handleCopyCompanies}
+              disabled={!companies.length}
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-[#0070E0] py-3 text-sm font-semibold text-[#0070E0] hover:bg-[#0070E0]/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {companiesCopied ? <Check size={16} /> : <Copy size={16} />}
+              {companiesCopied ? "已复制" : "一键复制"}
+            </button>
+          </div>
+
+          <div className="mt-5 max-h-80 overflow-y-auto rounded-lg border border-slate-200 bg-slate-50 p-3">
+            {companies.length === 0 ? (
+              <p className="text-center text-sm text-slate-400 py-8">点击"生成"按钮开始</p>
+            ) : (
+              <ul className="space-y-1 text-sm text-slate-800">
+                {companies.map((c, i) => (
+                  <li key={i} className="rounded px-2 py-1 hover:bg-white">
+                    <span className="text-slate-400 mr-2">{i + 1}.</span>{c}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
 
-        {/* Card */}
+        {/* Password Card (right) */}
         <div className="rounded-2xl bg-white p-8 text-slate-900 shadow-2xl">
           {/* Mode tabs */}
           <div>
@@ -194,7 +294,6 @@ function Index() {
             <label className="text-sm font-medium text-slate-700">自定义新密码</label>
             <div className="mt-4 h-px bg-slate-200" />
 
-            {/* Length slider */}
             <div className="mt-5 flex items-center gap-4">
               <span className="text-sm text-slate-600 w-10">{g.mode === "memorable" ? "单词" : "字符"}</span>
               <input
@@ -210,7 +309,6 @@ function Index() {
               </div>
             </div>
 
-            {/* Toggles */}
             {g.mode !== "pin" && (
               <div className="mt-6 flex items-center gap-8">
                 <div className="flex items-center gap-3">
@@ -225,7 +323,6 @@ function Index() {
             )}
           </div>
 
-          {/* Result */}
           <div className="mt-8">
             <label className="text-sm font-medium text-slate-700">生成密码</label>
             <div className="mt-3 flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-4 py-4">
@@ -243,7 +340,6 @@ function Index() {
             {copied && <p className="mt-2 text-xs text-green-600">已复制到剪贴板</p>}
           </div>
 
-          {/* Actions */}
           <div className="mt-6 grid grid-cols-2 gap-3">
             <button
               onClick={handleCopy}
@@ -261,6 +357,33 @@ function Index() {
           </div>
         </div>
       </section>
+
+      {/* Feedback bar - bottom left */}
+      <div className="fixed bottom-6 left-6 z-50 flex flex-col gap-3">
+        <div className="flex gap-3">
+          <button
+            onClick={handleGood}
+            className="relative flex h-20 w-24 flex-col items-center justify-center gap-1 rounded-xl bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 active:scale-95 transition-all border border-emerald-500/30 backdrop-blur"
+          >
+            <span className="text-sm font-semibold">Good</span>
+            <span className="text-lg font-bold tabular-nums">{good}</span>
+            {bursts.good.map((b) => (
+              <span key={b.id} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl animate-[burst_0.9s_ease-out_forwards]">{b.emoji}</span>
+            ))}
+          </button>
+          <button
+            onClick={handleBad}
+            className="relative flex h-20 w-24 flex-col items-center justify-center gap-1 rounded-xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 active:scale-95 transition-all border border-rose-500/30 backdrop-blur"
+          >
+            <span className="text-sm font-semibold">Bad</span>
+            <span className="text-lg font-bold tabular-nums">{bad}</span>
+            {bursts.bad.map((b) => (
+              <span key={b.id} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl animate-[burst_0.9s_ease-out_forwards]">{b.emoji}</span>
+            ))}
+          </button>
+        </div>
+        <p className="text-xs text-slate-400">版权所有@涛哥</p>
+      </div>
     </main>
   );
 }
