@@ -18,10 +18,12 @@ function pick<T>(arr: T[] | string): T | string {
   return (arr as any)[i];
 }
 
-function generateRandom(length: number, numbers: boolean, symbols: boolean) {
-  let pool = LOWER + UPPER;
+function generateRandom(length: number, letters: boolean, numbers: boolean, symbols: boolean) {
+  let pool = "";
+  if (letters) pool += LOWER + UPPER;
   if (numbers) pool += DIGITS;
   if (symbols) pool += SYMBOLS;
+  if (!pool) return "";
   let out = "";
   for (let i = 0; i < length; i++) out += pool[Math.floor(Math.random() * pool.length)];
   return out;
@@ -48,15 +50,16 @@ function generatePin(length: number) {
 export function usePasswordGenerator() {
   const [mode, setMode] = useState<PasswordMode>("random");
   const [length, setLength] = useState(20);
+  const [letters, setLetters] = useState(true);
   const [numbers, setNumbers] = useState(true);
   const [symbols, setSymbols] = useState(false);
   const [password, setPassword] = useState("");
 
   const regenerate = useCallback(() => {
-    if (mode === "random") setPassword(generateRandom(length, numbers, symbols));
+    if (mode === "random") setPassword(generateRandom(length, letters, numbers, symbols));
     else if (mode === "memorable") setPassword(generateMemorable(Math.max(3, Math.min(8, Math.round(length / 4))), numbers, symbols));
     else setPassword(generatePin(Math.min(12, Math.max(3, length))));
-  }, [mode, length, numbers, symbols]);
+  }, [mode, length, letters, numbers, symbols]);
 
   useEffect(() => {
     regenerate();
@@ -71,6 +74,7 @@ export function usePasswordGenerator() {
   return {
     mode, setMode,
     length, setLength,
+    letters, setLetters,
     numbers, setNumbers,
     symbols, setSymbols,
     password,

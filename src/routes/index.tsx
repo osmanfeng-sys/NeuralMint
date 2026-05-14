@@ -316,6 +316,10 @@ function Index() {
             {g.mode !== "pin" && (
               <div className="mt-6 flex items-center gap-8">
                 <div className="flex items-center gap-3">
+                  <span className="text-sm text-slate-700">字母</span>
+                  <Toggle checked={g.letters} onChange={g.setLetters} />
+                </div>
+                <div className="flex items-center gap-3">
                   <span className="text-sm text-slate-700">数字</span>
                   <Toggle checked={g.numbers} onChange={g.setNumbers} />
                 </div>
