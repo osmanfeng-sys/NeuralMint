@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Copy, Check, RefreshCw, Shuffle, Lightbulb, Hash } from "lucide-react";
 import { usePasswordGenerator, type PasswordMode } from "@/hooks/use-password-generator";
 
