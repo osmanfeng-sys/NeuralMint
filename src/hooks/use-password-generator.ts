@@ -18,10 +18,12 @@ function pick<T>(arr: T[] | string): T | string {
   return (arr as any)[i];
 }
 
-function generateRandom(length: number, numbers: boolean, symbols: boolean) {
-  let pool = LOWER + UPPER;
+function generateRandom(length: number, letters: boolean, numbers: boolean, symbols: boolean) {
+  let pool = "";
+  if (letters) pool += LOWER + UPPER;
   if (numbers) pool += DIGITS;
   if (symbols) pool += SYMBOLS;
+  if (!pool) return "";
   let out = "";
   for (let i = 0; i < length; i++) out += pool[Math.floor(Math.random() * pool.length)];
   return out;
