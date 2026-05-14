@@ -137,8 +137,25 @@ function Index() {
               ))}
             </button>
           </div>
-          <h1 className="text-5xl font-bold leading-tight tracking-tight md:text-6xl">
-            无需注册，无需绑定手机，无需绑定账号，事了抚衣去，深藏功与名。杜绝隐私泄露。
+          <h1
+            className="overflow-hidden whitespace-nowrap font-semibold"
+            style={{
+              fontFamily: '"Source Han Sans SC", "Source Han Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+              fontSize: "16px",
+              lineHeight: "1.6",
+            }}
+          >
+            <span className="inline-block animate-[marquee_22s_linear_infinite] pl-full">
+              {[0, 1].map((rep) => (
+                <span key={rep} className="inline-block pr-16">
+                  {marqueeText.split("").map((ch, i) => (
+                    <span key={`${rep}-${i}`} style={{ color: marqueeColors[(i + rep) % marqueeColors.length] }}>
+                      {ch}
+                    </span>
+                  ))}
+                </span>
+              ))}
+            </span>
           </h1>
           <p className="mt-6 text-lg text-slate-300">
             版权所有@涛哥
