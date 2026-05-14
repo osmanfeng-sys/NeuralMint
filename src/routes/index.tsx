@@ -68,9 +68,7 @@ function Index() {
       <section className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-12 lg:grid-cols-2 lg:py-20">
         <div className="flex flex-col justify-center">
           <h1 className="text-5xl font-bold leading-tight tracking-tight md:text-6xl">
-            强大。安全。卓越。
-            <br />
-            试试我们的随机密码生成器。
+            无需注册，无需绑定手机，无需绑定账号，事了抚衣去，深藏功与名。杜绝隐私泄露。
           </h1>
           <p className="mt-6 text-lg text-slate-300">
             功能强大的强密码生成器，保障您的在线账户安全。
