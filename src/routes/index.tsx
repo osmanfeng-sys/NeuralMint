@@ -39,16 +39,36 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
   );
 }
 
+type Burst = { id: number; emoji: string };
+
 function Index() {
   const g = usePasswordGenerator();
   const [copied, setCopied] = useState(false);
   const [good, setGood] = useState<number>(() => Number(typeof localStorage !== "undefined" ? localStorage.getItem("fb_good") ?? 0 : 0));
   const [bad, setBad] = useState<number>(() => Number(typeof localStorage !== "undefined" ? localStorage.getItem("fb_bad") ?? 0 : 0));
+  const [bursts, setBursts] = useState<Record<"good" | "bad", Burst[]>>({ good: [], bad: [] });
 
   if (typeof localStorage !== "undefined") {
     localStorage.setItem("fb_good", String(good));
     localStorage.setItem("fb_bad", String(bad));
   }
+
+  const triggerBurst = (kind: "good" | "bad", emoji: string) => {
+    const id = Date.now() + Math.random();
+    setBursts((b) => ({ ...b, [kind]: [...b[kind], { id, emoji }] }));
+    setTimeout(() => {
+      setBursts((b) => ({ ...b, [kind]: b[kind].filter((x) => x.id !== id) }));
+    }, 900);
+  };
+
+  const handleGood = () => {
+    setGood((n) => n + 1);
+    triggerBurst("good", "👍");
+  };
+  const handleBad = () => {
+    setBad((n) => n + 1);
+    triggerBurst("bad", "😢");
+  };
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(g.password);
@@ -74,20 +94,36 @@ function Index() {
       {/* Hero + Generator */}
       <section className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-12 lg:grid-cols-2 lg:py-20">
         <div className="flex flex-col justify-center">
-          <div className="mb-8 flex gap-4">
+          <div className="mb-8 flex gap-12">
             <button
-              onClick={() => setGood((n) => n + 1)}
-              className="flex flex-col items-center gap-1 rounded-lg bg-emerald-500/10 px-5 py-3 text-emerald-300 hover:bg-emerald-500/20 transition-colors border border-emerald-500/30"
+              onClick={handleGood}
+              className="relative flex h-24 w-32 flex-col items-center justify-center gap-1 rounded-xl bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 active:scale-95 transition-all border border-emerald-500/30"
             >
               <span className="text-sm font-semibold">Good</span>
-              <span className="text-lg font-bold tabular-nums">{good}</span>
+              <span className="text-xl font-bold tabular-nums">{good}</span>
+              {bursts.good.map((b) => (
+                <span
+                  key={b.id}
+                  className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl animate-[burst_0.9s_ease-out_forwards]"
+                >
+                  {b.emoji}
+                </span>
+              ))}
             </button>
             <button
-              onClick={() => setBad((n) => n + 1)}
-              className="flex flex-col items-center gap-1 rounded-lg bg-rose-500/10 px-5 py-3 text-rose-300 hover:bg-rose-500/20 transition-colors border border-rose-500/30"
+              onClick={handleBad}
+              className="relative flex h-24 w-32 flex-col items-center justify-center gap-1 rounded-xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 active:scale-95 transition-all border border-rose-500/30"
             >
               <span className="text-sm font-semibold">Bad</span>
-              <span className="text-lg font-bold tabular-nums">{bad}</span>
+              <span className="text-xl font-bold tabular-nums">{bad}</span>
+              {bursts.bad.map((b) => (
+                <span
+                  key={b.id}
+                  className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl animate-[burst_0.9s_ease-out_forwards]"
+                >
+                  {b.emoji}
+                </span>
+              ))}
             </button>
           </div>
           <h1 className="text-5xl font-bold leading-tight tracking-tight md:text-6xl">
