@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Copy, Check, RefreshCw, Shuffle, Lightbulb, Hash, Sparkles } from "lucide-react";
+import { Copy, Check, RefreshCw, Shuffle, Lightbulb, Hash, Sparkles, KeyRound } from "lucide-react";
 import { usePasswordGenerator, type PasswordMode } from "@/hooks/use-password-generator";
 
 export const Route = createFileRoute("/")({
@@ -118,7 +118,7 @@ function Index() {
   const maxLen = g.mode === "pin" ? 12 : 100;
 
   return (
-    <main className="min-h-screen bg-[#0A2540] text-white pb-32">
+    <main className="min-h-screen bg-[#0A2540] text-white">
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
         <div className="flex items-center gap-2">
@@ -191,7 +191,7 @@ function Index() {
             <input
               type="range"
               min={1}
-              max={6}
+              max={8}
               value={midLen}
               onChange={(e) => setMidLen(Number(e.target.value))}
               className="flex-1 accent-[#0070E0]"
@@ -199,7 +199,7 @@ function Index() {
             <input
               type="number"
               min={1}
-              max={6}
+              max={8}
               value={midLen}
               onChange={(e) => setMidLen(Number(e.target.value))}
               className="w-14 rounded-md border border-slate-200 px-2 py-1 text-center text-sm font-medium"
@@ -266,6 +266,10 @@ function Index() {
 
         {/* Password Card (right) */}
         <div className="rounded-2xl bg-white p-8 text-slate-900 shadow-2xl">
+          <div className="mb-6 flex items-center gap-2">
+            <KeyRound size={20} className="text-[#0070E0]" />
+            <h2 className="text-lg font-semibold">随机密码生成器</h2>
+          </div>
           {/* Mode tabs */}
           <div>
             <label className="text-sm font-medium text-slate-700">选择密码类型</label>
@@ -358,31 +362,31 @@ function Index() {
         </div>
       </section>
 
-      {/* Feedback bar - bottom left */}
-      <div className="fixed bottom-6 left-6 z-50 flex flex-col gap-3">
-        <div className="flex gap-3">
+      {/* Feedback bar - bottom left, inline (not fixed) */}
+      <div className="mx-auto max-w-7xl px-6 pb-8">
+        <div className="flex items-end gap-3">
           <button
             onClick={handleGood}
-            className="relative flex h-20 w-24 flex-col items-center justify-center gap-1 rounded-xl bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 active:scale-95 transition-all border border-emerald-500/30 backdrop-blur"
+            className="relative flex h-10 w-24 items-center justify-center gap-2 rounded-lg bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 active:scale-95 transition-all border border-emerald-500/30"
           >
             <span className="text-sm font-semibold">Good</span>
-            <span className="text-lg font-bold tabular-nums">{good}</span>
+            <span className="text-sm font-bold tabular-nums">{good}</span>
             {bursts.good.map((b) => (
-              <span key={b.id} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl animate-[burst_0.9s_ease-out_forwards]">{b.emoji}</span>
+              <span key={b.id} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl animate-[burst_0.9s_ease-out_forwards]">{b.emoji}</span>
             ))}
           </button>
           <button
             onClick={handleBad}
-            className="relative flex h-20 w-24 flex-col items-center justify-center gap-1 rounded-xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 active:scale-95 transition-all border border-rose-500/30 backdrop-blur"
+            className="relative flex h-10 w-24 items-center justify-center gap-2 rounded-lg bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 active:scale-95 transition-all border border-rose-500/30"
           >
             <span className="text-sm font-semibold">Bad</span>
-            <span className="text-lg font-bold tabular-nums">{bad}</span>
+            <span className="text-sm font-bold tabular-nums">{bad}</span>
             {bursts.bad.map((b) => (
-              <span key={b.id} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl animate-[burst_0.9s_ease-out_forwards]">{b.emoji}</span>
+              <span key={b.id} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl animate-[burst_0.9s_ease-out_forwards]">{b.emoji}</span>
             ))}
           </button>
+          <p className="ml-2 text-xs text-slate-400">版权所有@涛哥</p>
         </div>
-        <p className="text-xs text-slate-400">版权所有@涛哥</p>
       </div>
     </main>
   );
