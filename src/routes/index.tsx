@@ -118,7 +118,7 @@ function Index() {
   const maxLen = g.mode === "pin" ? 12 : 100;
 
   return (
-    <main className="min-h-screen bg-[#0A2540] text-white pb-32">
+    <main className="min-h-screen bg-[#0A2540] text-white">
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
         <div className="flex items-center gap-2">
