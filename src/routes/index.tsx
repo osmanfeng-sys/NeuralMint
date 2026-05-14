@@ -44,14 +44,25 @@ type Burst = { id: number; emoji: string };
 function Index() {
   const g = usePasswordGenerator();
   const [copied, setCopied] = useState(false);
-  const [good, setGood] = useState<number>(() => Number(typeof localStorage !== "undefined" ? localStorage.getItem("fb_good") ?? 0 : 0));
-  const [bad, setBad] = useState<number>(() => Number(typeof localStorage !== "undefined" ? localStorage.getItem("fb_bad") ?? 0 : 0));
+  const [good, setGood] = useState<number>(0);
+  const [bad, setBad] = useState<number>(0);
   const [bursts, setBursts] = useState<Record<"good" | "bad", Burst[]>>({ good: [], bad: [] });
 
-  if (typeof localStorage !== "undefined") {
+  useEffect(() => {
+    setGood(Number(localStorage.getItem("fb_good") ?? 0));
+    setBad(Number(localStorage.getItem("fb_bad") ?? 0));
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem("fb_good", String(good));
     localStorage.setItem("fb_bad", String(bad));
-  }
+  }, [good, bad]);
+
+  const marqueeText = "无需注册，无需绑定手机，无需绑定账号，事了抚衣去，深藏功与名。杜绝隐私泄露。";
+  const marqueeColors = useMemo(
+    () => ["#ff5e5e", "#ffb454", "#ffe156", "#7ddc6a", "#5ec8ff", "#a78bfa", "#ff7ac6", "#ffffff"],
+    []
+  );
 
   const triggerBurst = (kind: "good" | "bad", emoji: string) => {
     const id = Date.now() + Math.random();
