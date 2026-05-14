@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Copy, Check, RefreshCw, Shuffle, Lightbulb, Hash } from "lucide-react";
 import { usePasswordGenerator, type PasswordMode } from "@/hooks/use-password-generator";
 
@@ -44,14 +44,25 @@ type Burst = { id: number; emoji: string };
 function Index() {
   const g = usePasswordGenerator();
   const [copied, setCopied] = useState(false);
-  const [good, setGood] = useState<number>(() => Number(typeof localStorage !== "undefined" ? localStorage.getItem("fb_good") ?? 0 : 0));
-  const [bad, setBad] = useState<number>(() => Number(typeof localStorage !== "undefined" ? localStorage.getItem("fb_bad") ?? 0 : 0));
+  const [good, setGood] = useState<number>(0);
+  const [bad, setBad] = useState<number>(0);
   const [bursts, setBursts] = useState<Record<"good" | "bad", Burst[]>>({ good: [], bad: [] });
 
-  if (typeof localStorage !== "undefined") {
+  useEffect(() => {
+    setGood(Number(localStorage.getItem("fb_good") ?? 0));
+    setBad(Number(localStorage.getItem("fb_bad") ?? 0));
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem("fb_good", String(good));
     localStorage.setItem("fb_bad", String(bad));
-  }
+  }, [good, bad]);
+
+  const marqueeText = "无需注册，无需绑定手机，无需绑定账号，事了抚衣去，深藏功与名。杜绝隐私泄露。";
+  const marqueeColors = useMemo(
+    () => ["#ff5e5e", "#ffb454", "#ffe156", "#7ddc6a", "#5ec8ff", "#a78bfa", "#ff7ac6", "#ffffff"],
+    []
+  );
 
   const triggerBurst = (kind: "good" | "bad", emoji: string) => {
     const id = Date.now() + Math.random();
@@ -126,8 +137,25 @@ function Index() {
               ))}
             </button>
           </div>
-          <h1 className="text-5xl font-bold leading-tight tracking-tight md:text-6xl">
-            无需注册，无需绑定手机，无需绑定账号，事了抚衣去，深藏功与名。杜绝隐私泄露。
+          <h1
+            className="overflow-hidden whitespace-nowrap font-semibold"
+            style={{
+              fontFamily: '"Source Han Sans SC", "Source Han Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+              fontSize: "16px",
+              lineHeight: "1.6",
+            }}
+          >
+            <span className="inline-block animate-[marquee_22s_linear_infinite] pl-full">
+              {[0, 1].map((rep) => (
+                <span key={rep} className="inline-block pr-16">
+                  {marqueeText.split("").map((ch, i) => (
+                    <span key={`${rep}-${i}`} style={{ color: marqueeColors[(i + rep) % marqueeColors.length] }}>
+                      {ch}
+                    </span>
+                  ))}
+                </span>
+              ))}
+            </span>
           </h1>
           <p className="mt-6 text-lg text-slate-300">
             版权所有@涛哥
