@@ -362,31 +362,31 @@ function Index() {
         </div>
       </section>
 
-      {/* Feedback bar - bottom left */}
-      <div className="fixed bottom-6 left-6 z-50 flex flex-col gap-3">
-        <div className="flex gap-3">
+      {/* Feedback bar - bottom left, inline (not fixed) */}
+      <div className="mx-auto max-w-7xl px-6 pb-8">
+        <div className="flex items-end gap-3">
           <button
             onClick={handleGood}
-            className="relative flex h-20 w-24 flex-col items-center justify-center gap-1 rounded-xl bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 active:scale-95 transition-all border border-emerald-500/30 backdrop-blur"
+            className="relative flex h-10 w-24 items-center justify-center gap-2 rounded-lg bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 active:scale-95 transition-all border border-emerald-500/30"
           >
             <span className="text-sm font-semibold">Good</span>
-            <span className="text-lg font-bold tabular-nums">{good}</span>
+            <span className="text-sm font-bold tabular-nums">{good}</span>
             {bursts.good.map((b) => (
-              <span key={b.id} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl animate-[burst_0.9s_ease-out_forwards]">{b.emoji}</span>
+              <span key={b.id} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl animate-[burst_0.9s_ease-out_forwards]">{b.emoji}</span>
             ))}
           </button>
           <button
             onClick={handleBad}
-            className="relative flex h-20 w-24 flex-col items-center justify-center gap-1 rounded-xl bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 active:scale-95 transition-all border border-rose-500/30 backdrop-blur"
+            className="relative flex h-10 w-24 items-center justify-center gap-2 rounded-lg bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 active:scale-95 transition-all border border-rose-500/30"
           >
             <span className="text-sm font-semibold">Bad</span>
-            <span className="text-lg font-bold tabular-nums">{bad}</span>
+            <span className="text-sm font-bold tabular-nums">{bad}</span>
             {bursts.bad.map((b) => (
-              <span key={b.id} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl animate-[burst_0.9s_ease-out_forwards]">{b.emoji}</span>
+              <span key={b.id} className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl animate-[burst_0.9s_ease-out_forwards]">{b.emoji}</span>
             ))}
           </button>
+          <p className="ml-2 text-xs text-slate-400">版权所有@涛哥</p>
         </div>
-        <p className="text-xs text-slate-400">版权所有@涛哥</p>
       </div>
     </main>
   );
