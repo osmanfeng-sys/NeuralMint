@@ -346,17 +346,17 @@ function Index() {
 
           <div className="mt-6 grid grid-cols-2 gap-3">
             <button
-              onClick={handleCopy}
-              className="rounded-lg bg-[#0070E0] py-3 text-sm font-semibold text-white hover:bg-[#005fc4] transition-colors"
-            >
-              复制密码
-            </button>
-            <button
               onClick={g.regenerate}
               className="flex items-center justify-center gap-2 rounded-lg border-2 border-[#0070E0] py-3 text-sm font-semibold text-[#0070E0] hover:bg-[#0070E0]/5 transition-colors"
             >
               <RefreshCw size={16} />
               刷新密码
+            </button>
+            <button
+              onClick={handleCopy}
+              className="rounded-lg bg-[#0070E0] py-3 text-sm font-semibold text-white hover:bg-[#005fc4] transition-colors"
+            >
+              复制密码
             </button>
           </div>
         </div>
