@@ -191,7 +191,7 @@ function Index() {
             <input
               type="range"
               min={1}
-              max={6}
+              max={8}
               value={midLen}
               onChange={(e) => setMidLen(Number(e.target.value))}
               className="flex-1 accent-[#0070E0]"
@@ -199,7 +199,7 @@ function Index() {
             <input
               type="number"
               min={1}
-              max={6}
+              max={8}
               value={midLen}
               onChange={(e) => setMidLen(Number(e.target.value))}
               className="w-14 rounded-md border border-slate-200 px-2 py-1 text-center text-sm font-medium"
