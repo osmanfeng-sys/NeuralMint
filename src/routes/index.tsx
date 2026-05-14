@@ -266,6 +266,10 @@ function Index() {
 
         {/* Password Card (right) */}
         <div className="rounded-2xl bg-white p-8 text-slate-900 shadow-2xl">
+          <div className="mb-6 flex items-center gap-2">
+            <KeyRound size={20} className="text-[#0070E0]" />
+            <h2 className="text-lg font-semibold">随机密码生成器</h2>
+          </div>
           {/* Mode tabs */}
           <div>
             <label className="text-sm font-medium text-slate-700">选择密码类型</label>
