@@ -39,16 +39,36 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
   );
 }
 
+type Burst = { id: number; emoji: string };
+
 function Index() {
   const g = usePasswordGenerator();
   const [copied, setCopied] = useState(false);
   const [good, setGood] = useState<number>(() => Number(typeof localStorage !== "undefined" ? localStorage.getItem("fb_good") ?? 0 : 0));
   const [bad, setBad] = useState<number>(() => Number(typeof localStorage !== "undefined" ? localStorage.getItem("fb_bad") ?? 0 : 0));
+  const [bursts, setBursts] = useState<Record<"good" | "bad", Burst[]>>({ good: [], bad: [] });
 
   if (typeof localStorage !== "undefined") {
     localStorage.setItem("fb_good", String(good));
     localStorage.setItem("fb_bad", String(bad));
   }
+
+  const triggerBurst = (kind: "good" | "bad", emoji: string) => {
+    const id = Date.now() + Math.random();
+    setBursts((b) => ({ ...b, [kind]: [...b[kind], { id, emoji }] }));
+    setTimeout(() => {
+      setBursts((b) => ({ ...b, [kind]: b[kind].filter((x) => x.id !== id) }));
+    }, 900);
+  };
+
+  const handleGood = () => {
+    setGood((n) => n + 1);
+    triggerBurst("good", "👍");
+  };
+  const handleBad = () => {
+    setBad((n) => n + 1);
+    triggerBurst("bad", "😢");
+  };
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(g.password);
