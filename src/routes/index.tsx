@@ -105,7 +105,7 @@ function Index() {
       {/* Hero + Generator */}
       <section className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-12 lg:grid-cols-2 lg:py-20">
         <div className="flex flex-col justify-center">
-          <div className="mb-8 flex gap-12">
+          <div className="flex flex-col justify-center text-left">
             <button
               onClick={handleGood}
               className="relative flex h-24 w-32 flex-col items-center justify-center gap-1 rounded-xl bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 active:scale-95 transition-all border border-emerald-500/30"
