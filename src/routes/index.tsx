@@ -42,6 +42,13 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 function Index() {
   const g = usePasswordGenerator();
   const [copied, setCopied] = useState(false);
+  const [good, setGood] = useState<number>(() => Number(typeof localStorage !== "undefined" ? localStorage.getItem("fb_good") ?? 0 : 0));
+  const [bad, setBad] = useState<number>(() => Number(typeof localStorage !== "undefined" ? localStorage.getItem("fb_bad") ?? 0 : 0));
+
+  if (typeof localStorage !== "undefined") {
+    localStorage.setItem("fb_good", String(good));
+    localStorage.setItem("fb_bad", String(bad));
+  }
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(g.password);
