@@ -57,7 +57,7 @@ function Index() {
       {/* Nav */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
         <div className="flex items-center gap-2">
-          <span className="text-lg font-semibold">PasswordGen</span>
+          <span className="text-lg font-semibold">免费随机码生成器</span>
         </div>
         <button className="rounded-full bg-[#0070E0] px-5 py-2.5 text-sm font-semibold hover:bg-[#005fc4] transition-colors">
           免费开始使用
